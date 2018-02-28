@@ -1,0 +1,35 @@
+---
+## tasks file for kuberunner
+## task to create namespace
+- name: create namespace ada-namespace
+  k8s_v1_namespace: 
+    debug: yes
+    state: present
+    src: "{{ role_path }}/files/namespace.yml"
+
+- name: create volume pv0021
+  k8s_v1_persistent_volume: 
+    debug: yes
+    state: present
+    src: "{{ role_path }}/files/pv.yml"
+
+- name: create volume claim
+  k8s_v1_persistent_volume_claim: 
+    debug: yes
+    state: present
+    src: "{{ role_path }}/files/pvc.yml"
+
+- name: create development yml with proper tag and version of the image
+  template: src={{ role_path }}/templates/deployment.yml dest={{ role_path }}/files/deployment.yml
+
+- name: create deployment
+  k8s_extensions_v1beta1_deployment: 
+    debug: yes
+    state: present
+    src: "{{ role_path }}/files/deployment.yml"
+
+- name: create service
+  k8s_v1_service: 
+    debug: yes
+    state: present
+    src: "{{ role_path }}/files/service.yml"

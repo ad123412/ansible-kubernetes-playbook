@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: spring-react-deployment
+  namespace: ada-namespace
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spring-react-demo
+  minReadySeconds: 10
+  template:
+    metadata:
+      labels:
+        app: spring-react-demo
+        version: {{ image_version }}
+    spec:
+     containers:
+     - image: spring-react:{{ image_version }}
+       name: spring-react-demo
+       imagePullPolicy: IfNotPresent
+       ports:
+        - containerPort: 8073
+          protocol: TCP
+       env:
+        - name: DEMO_ENV
+          value: {{ demo_env }}
+       volumeMounts:
+         - name: log-persistent-storage
+           mountPath: /app/logs
+     volumes:
+      - name: log-persistent-storage
+        persistentVolumeClaim:
+         claimName: diplogpvc
+
